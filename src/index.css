@@ -5,7 +5,70 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Light theme (default when .dark class is absent) */
 :root {
+  --background: #faf7f7;
+  --foreground: #1a0a0a;
+  --card: #ffffff;
+  --card-foreground: #1a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #1a0a0a;
+  --primary: #f20d0d;
+  --primary-foreground: #ffffff;
+  --secondary: #f5eaea;
+  --secondary-foreground: #492222;
+  --muted: #f0e8e8;
+  --muted-foreground: #6b4444;
+  --accent: rgba(242, 13, 13, 0.08);
+  --accent-foreground: #1a0a0a;
+  --destructive: #d40b0b;
+  --border: rgba(242, 13, 13, 0.12);
+  --input: rgba(242, 13, 13, 0.06);
+  --ring: rgba(242, 13, 13, 0.35);
+  --chart-1: #f20d0d;
+  --chart-2: #492222;
+  --chart-3: #c4a0a0;
+  --chart-4: #faf7f7;
+  --chart-5: #f5f0f0;
+  --radius: 0.125rem;
+  --sidebar: #f5f0f0;
+  --sidebar-foreground: #1a0a0a;
+  --sidebar-primary: #f20d0d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(242, 13, 13, 0.08);
+  --sidebar-accent-foreground: #1a0a0a;
+  --sidebar-border: rgba(242, 13, 13, 0.12);
+  --sidebar-ring: rgba(242, 13, 13, 0.35);
+  --surface-dim: #f5f0f0;
+  --surface-container: #ffffff;
+
+  /* Semantic status tokens */
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+  --status-success-fg: #047857;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-warning-fg: #b45309;
+  --status-info-bg: rgba(59, 130, 246, 0.15);
+  --status-info-fg: #1d4ed8;
+  --status-processing-bg: rgba(234, 179, 8, 0.15);
+  --status-processing-fg: #a16207;
+  --status-shipped-bg: rgba(99, 102, 241, 0.15);
+  --status-shipped-fg: #4338ca;
+  --status-danger-bg: rgba(242, 13, 13, 0.12);
+  --status-danger-fg: #b91c1c;
+  --status-neutral-bg: rgba(107, 68, 68, 0.1);
+  --status-neutral-fg: #6b4444;
+
+  /* Chart & login decorative tokens */
+  --chart-grid: rgba(242, 13, 13, 0.08);
+  --chart-tooltip-border: rgba(242, 13, 13, 0.15);
+  --login-glow-1: rgba(242, 13, 13, 0.1);
+  --login-glow-2: rgba(242, 13, 13, 0.06);
+  --login-overlay-start: rgba(250, 247, 247, 0.2);
+  --login-overlay-end: rgba(250, 247, 247, 0.92);
+}
+
+/* Dark theme — current Crimson Forge look */
+.dark {
   --background: #221010;
   --foreground: #ffffff;
   --card: #2a1414;
@@ -29,7 +92,6 @@
   --chart-3: #331818;
   --chart-4: #221010;
   --chart-5: #140808;
-  --radius: 0.125rem;
   --sidebar: #140808;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #f20d0d;
@@ -40,35 +102,28 @@
   --sidebar-ring: rgba(242, 13, 13, 0.5);
   --surface-dim: #140808;
   --surface-container: #2a1414;
-}
 
-.dark {
-  --background: #221010;
-  --foreground: #ffffff;
-  --card: #2a1414;
-  --card-foreground: #ffffff;
-  --popover: #2a1414;
-  --popover-foreground: #ffffff;
-  --primary: #f20d0d;
-  --primary-foreground: #ffffff;
-  --secondary: #492222;
-  --secondary-foreground: #ffffff;
-  --muted: #331818;
-  --muted-foreground: #c4a0a0;
-  --accent: rgba(242, 13, 13, 0.1);
-  --accent-foreground: #ffffff;
-  --destructive: #f20d0d;
-  --border: rgba(242, 13, 13, 0.1);
-  --input: rgba(242, 13, 13, 0.05);
-  --ring: rgba(242, 13, 13, 0.5);
-  --sidebar: #140808;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #f20d0d;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(242, 13, 13, 0.1);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(242, 13, 13, 0.1);
-  --sidebar-ring: rgba(242, 13, 13, 0.5);
+  --status-success-bg: rgba(16, 185, 129, 0.2);
+  --status-success-fg: #34d399;
+  --status-warning-bg: rgba(245, 158, 11, 0.2);
+  --status-warning-fg: #fbbf24;
+  --status-info-bg: rgba(59, 130, 246, 0.2);
+  --status-info-fg: #60a5fa;
+  --status-processing-bg: rgba(234, 179, 8, 0.2);
+  --status-processing-fg: #facc15;
+  --status-shipped-bg: rgba(99, 102, 241, 0.2);
+  --status-shipped-fg: #818cf8;
+  --status-danger-bg: rgba(242, 13, 13, 0.2);
+  --status-danger-fg: #f87171;
+  --status-neutral-bg: rgba(196, 160, 160, 0.15);
+  --status-neutral-fg: #c4a0a0;
+
+  --chart-grid: rgba(242, 13, 13, 0.08);
+  --chart-tooltip-border: rgba(242, 13, 13, 0.15);
+  --login-glow-1: rgba(242, 13, 13, 0.18);
+  --login-glow-2: rgba(242, 13, 13, 0.12);
+  --login-overlay-start: rgba(20, 8, 8, 0.2);
+  --login-overlay-end: rgba(20, 8, 8, 0.85);
 }
 
 @theme inline {
@@ -105,6 +160,8 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-container: var(--surface-container);
   --radius-sm: var(--radius);
   --radius-md: calc(var(--radius) * 2);
   --radius-lg: calc(var(--radius) * 3);

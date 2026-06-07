@@ -140,7 +140,7 @@ export function CategoryForm({ mode, categoryId, defaultValues }: CategoryFormPr
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="max-w-xl space-y-6">
+      <form onSubmit={onSubmit} className="w-full space-y-6">
         <div className="space-y-4 rounded-sm border border-primary/10 p-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>

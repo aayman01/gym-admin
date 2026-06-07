@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -40,11 +41,24 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-svh overflow-hidden bg-[#221010] text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(242,13,13,0.18),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(242,13,13,0.12),transparent_35%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(20,8,8,0.2)_0%,rgba(20,8,8,0.85)_100%)]" />
+    <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(circle at 20% 20%, var(--login-glow-1), transparent 40%), radial-gradient(circle at 80% 0%, var(--login-glow-2), transparent 35%)`,
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `linear-gradient(180deg, var(--login-overlay-start) 0%, var(--login-overlay-end) 100%)`,
+        }}
+      />
 
       <div className="relative z-10 flex min-h-svh items-center justify-center p-4 sm:p-8">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
         <div className="w-full max-w-[420px]">
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-sm bg-primary shadow-lg shadow-primary/20">
@@ -61,7 +75,7 @@ export function LoginPage() {
             </p>
           </div>
 
-          <div className="rounded-sm bg-[#2a1414] p-6 shadow-sm ring-1 ring-primary/10 sm:p-8">
+          <div className="rounded-sm bg-card p-6 shadow-sm ring-1 ring-primary/10 sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -77,7 +91,7 @@ export function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-10 rounded-sm border-0 bg-primary/5 pl-10 text-sm text-white placeholder:text-muted-foreground focus-visible:ring-primary/50"
+                    className="h-10 rounded-sm border-0 bg-primary/5 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50"
                   />
                 </div>
               </div>
@@ -96,7 +110,7 @@ export function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-10 rounded-sm border-0 bg-primary/5 pl-10 text-sm text-white placeholder:text-muted-foreground focus-visible:ring-primary/50"
+                    className="h-10 rounded-sm border-0 bg-primary/5 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50"
                   />
                 </div>
               </div>

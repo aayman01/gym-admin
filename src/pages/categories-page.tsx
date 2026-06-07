@@ -27,14 +27,14 @@ import {
 import { useDeleteCategory, useGetCategories } from '@/hooks/api/admin/use-categories';
 import { ApiError } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
+import {
+  defaultStatusBadgeClass,
+  itemStatusBadgeClass,
+} from '@/lib/status-styles';
 import type { Category } from '@/types/category-type';
 import type { ItemStatus } from '@/types/product-type';
 
-const STATUS_VARIANT: Record<string, string> = {
-  ACTIVE: 'bg-emerald-500/20 text-emerald-400',
-  INACTIVE: 'bg-muted text-muted-foreground',
-  DRAFT: 'bg-amber-500/20 text-amber-400',
-};
+const STATUS_VARIANT = itemStatusBadgeClass;
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -149,7 +149,7 @@ export function CategoriesPage() {
           <Badge
             className={cn(
               'rounded-full border-0 text-[10px] font-bold uppercase tracking-wider',
-              STATUS_VARIANT[row.original.status] ?? 'bg-primary/20 text-primary',
+              STATUS_VARIANT[row.original.status] ?? defaultStatusBadgeClass,
             )}
           >
             {row.original.status}

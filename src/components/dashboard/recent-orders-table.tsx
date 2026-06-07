@@ -8,25 +8,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+import {
+  defaultStatusBadgeClass,
+  orderStatusBadgeClass,
+  paymentStatusBadgeClass,
+} from '@/lib/status-styles';
 import type { RecentOrder } from '@/types/dashboard-type';
 
-const STATUS_VARIANT: Record<string, string> = {
-  PENDING: 'bg-amber-500/20 text-amber-400',
-  CONFIRMED: 'bg-blue-500/20 text-blue-400',
-  PROCESSING: 'bg-yellow-500/20 text-yellow-400',
-  SHIPPED: 'bg-indigo-500/20 text-indigo-400',
-  DELIVERED: 'bg-emerald-500/20 text-emerald-400',
-  CANCELLED: 'bg-destructive/20 text-destructive',
-  REFUNDED: 'bg-muted text-muted-foreground',
-};
-
-const PAYMENT_VARIANT: Record<string, string> = {
-  PAID: 'bg-emerald-500/20 text-emerald-400',
-  PENDING: 'bg-amber-500/20 text-amber-400',
-  FAILED: 'bg-destructive/20 text-destructive',
-  REFUNDED: 'bg-muted text-muted-foreground',
-  PARTIALLY_REFUNDED: 'bg-yellow-500/20 text-yellow-400',
-};
+const STATUS_VARIANT = orderStatusBadgeClass;
+const PAYMENT_VARIANT = paymentStatusBadgeClass;
 
 interface RecentOrdersTableProps {
   orders: RecentOrder[];
@@ -87,7 +77,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
               <Badge
                 className={cn(
                   'rounded-full border-0 text-[10px] font-bold uppercase tracking-wider',
-                  STATUS_VARIANT[order.status] ?? 'bg-primary/20 text-primary',
+                  STATUS_VARIANT[order.status] ?? defaultStatusBadgeClass,
                 )}
               >
                 {order.status}
@@ -98,7 +88,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                 className={cn(
                   'rounded-full border-0 text-[10px] font-bold uppercase tracking-wider',
                   PAYMENT_VARIANT[order.paymentStatus] ??
-                    'bg-primary/20 text-primary',
+                    defaultStatusBadgeClass,
                 )}
               >
                 {order.paymentStatus.replace(/_/g, ' ')}

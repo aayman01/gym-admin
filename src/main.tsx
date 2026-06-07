@@ -29,7 +29,12 @@ registerUnauthorizedHandler(() => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem={false}
+        storageKey="gym-admin-theme"
+      >
         <BrowserRouter>
           <TooltipProvider>
             <App />

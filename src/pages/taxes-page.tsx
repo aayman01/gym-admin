@@ -51,6 +51,10 @@ import {
 } from '@/hooks/api/admin/use-taxes';
 import { ApiError } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
+import {
+  defaultStatusBadgeClass,
+  itemStatusBadgeClass,
+} from '@/lib/status-styles';
 import type { Tax } from '@/types/tax-type';
 
 function formatDate(iso: string) {
@@ -287,8 +291,8 @@ export function TaxesPage() {
             className={cn(
               'rounded-full border-0 text-[10px] font-bold uppercase tracking-wider',
               row.original.isActive
-                ? 'bg-emerald-500/20 text-emerald-400'
-                : 'bg-muted text-muted-foreground',
+                ? (itemStatusBadgeClass.ACTIVE ?? defaultStatusBadgeClass)
+                : (itemStatusBadgeClass.INACTIVE ?? defaultStatusBadgeClass),
             )}
           >
             {row.original.isActive ? 'Active' : 'Inactive'}

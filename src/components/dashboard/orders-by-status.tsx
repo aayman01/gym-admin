@@ -1,15 +1,11 @@
 import { cn } from '@/lib/utils';
+import {
+  defaultStatusBadgeClass,
+  orderStatusBadgeClass,
+} from '@/lib/status-styles';
 import type { OrderStatusCount } from '@/types/dashboard-type';
 
-const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-amber-500/20 text-amber-400',
-  CONFIRMED: 'bg-blue-500/20 text-blue-400',
-  PROCESSING: 'bg-yellow-500/20 text-yellow-400',
-  SHIPPED: 'bg-indigo-500/20 text-indigo-400',
-  DELIVERED: 'bg-emerald-500/20 text-emerald-400',
-  CANCELLED: 'bg-destructive/20 text-destructive',
-  REFUNDED: 'bg-muted text-muted-foreground',
-};
+const STATUS_COLORS = orderStatusBadgeClass;
 
 interface OrdersByStatusProps {
   data: OrderStatusCount[];
@@ -38,7 +34,7 @@ export function OrdersByStatus({ data }: OrdersByStatusProps) {
               <span
                 className={cn(
                   'inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
-                  STATUS_COLORS[item.status] ?? 'bg-primary/20 text-primary',
+                  STATUS_COLORS[item.status] ?? defaultStatusBadgeClass,
                 )}
               >
                 {item.status.replace(/_/g, ' ')}

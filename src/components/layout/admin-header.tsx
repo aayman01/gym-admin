@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 export function AdminHeader() {
   const navigate = useNavigate();
@@ -37,7 +38,10 @@ export function AdminHeader() {
       <div className="flex flex-1 items-center justify-between">
         <p className="text-sm font-medium">Admin Panel</p>
 
-        <DropdownMenu>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+
+          <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button variant="ghost" size="sm" className="gap-2">
@@ -70,6 +74,7 @@ export function AdminHeader() {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </header>
   );

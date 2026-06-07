@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { trendBadgeClass } from '@/lib/status-styles';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 interface DashboardStatCardProps {
@@ -34,8 +35,8 @@ export function DashboardStatCard({
           <span
             className={cn(
               'inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider',
-              isPositive && 'bg-emerald-500/20 text-emerald-400',
-              isNegative && 'bg-destructive/20 text-destructive',
+              isPositive && trendBadgeClass.positive,
+              isNegative && trendBadgeClass.negative,
             )}
           >
             {isPositive && <TrendingUp className="size-3" />}

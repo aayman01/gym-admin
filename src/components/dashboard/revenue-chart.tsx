@@ -48,11 +48,11 @@ export function RevenueChart({ data }: RevenueChartProps) {
         <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f20d0d" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="#f20d0d" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="rgba(242,13,13,0.08)" vertical={false} />
+          <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
           <XAxis
             dataKey="date"
             tickFormatter={formatAxisDate}
@@ -71,9 +71,10 @@ export function RevenueChart({ data }: RevenueChartProps) {
           <Tooltip
             contentStyle={{
               background: 'var(--card)',
-              border: '1px solid rgba(242,13,13,0.15)',
+              border: '1px solid var(--chart-tooltip-border)',
               borderRadius: '2px',
               fontSize: '12px',
+              color: 'var(--foreground)',
             }}
             labelFormatter={(label) => formatAxisDate(String(label))}
             formatter={(value, name) => {
@@ -86,7 +87,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
           <Area
             type="monotone"
             dataKey="revenueNum"
-            stroke="#f20d0d"
+            stroke="var(--primary)"
             strokeWidth={2}
             fill="url(#revenueGradient)"
           />

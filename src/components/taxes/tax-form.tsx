@@ -133,7 +133,7 @@ export function TaxForm(props: TaxFormProps) {
       </div>
 
       {isCreate ? (
-        <form onSubmit={onCreateSubmit} className="max-w-xl space-y-6">
+        <form onSubmit={onCreateSubmit} className="w-full space-y-6">
           <div className="space-y-4 rounded-sm border border-primary/10 p-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
@@ -242,7 +242,7 @@ export function TaxForm(props: TaxFormProps) {
           </div>
         </form>
       ) : (
-        <form onSubmit={onEditSubmit} className="max-w-xl space-y-6">
+        <form onSubmit={onEditSubmit} className="w-full space-y-6">
           <div className="space-y-4 rounded-sm border border-primary/10 p-4">
             <div className="space-y-2">
               <Label htmlFor="edit-name">Name</Label>

@@ -14,14 +14,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import {
+  defaultStatusBadgeClass,
+  itemStatusBadgeClass,
+} from '@/lib/status-styles';
 import { useGetProducts } from '@/hooks/api/admin/use-products';
 import type { ItemStatus, Product, ProductType } from '@/types/product-type';
 
-const STATUS_VARIANT: Record<string, string> = {
-  ACTIVE: 'bg-emerald-500/20 text-emerald-400',
-  INACTIVE: 'bg-muted text-muted-foreground',
-  DRAFT: 'bg-amber-500/20 text-amber-400',
-};
+const STATUS_VARIANT = itemStatusBadgeClass;
 
 function formatCurrency(value: string) {
   return new Intl.NumberFormat('en-US', {
@@ -140,7 +140,7 @@ export function ProductsPage() {
           <Badge
             className={cn(
               'rounded-full border-0 text-[10px] font-bold uppercase tracking-wider',
-              STATUS_VARIANT[row.original.status] ?? 'bg-primary/20 text-primary',
+              STATUS_VARIANT[row.original.status] ?? defaultStatusBadgeClass,
             )}
           >
             {row.original.status}
