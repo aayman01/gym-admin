@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -22,9 +23,10 @@ export function AdminHeader() {
     try {
       await logout();
       toast.success('Logged out successfully');
-      navigate('/login', { replace: true });
     } catch {
-      toast.error('Failed to log out');
+      toast.error('Session cleared locally; server logout may have failed');
+    } finally {
+      navigate('/login', { replace: true });
     }
   }
 
@@ -47,21 +49,25 @@ export function AdminHeader() {
             }
           />
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <div className="flex flex-col">
-                <span>
-                  {admin ? `${admin.firstName} ${admin.lastName}` : 'Admin'}
-                </span>
-                <span className="text-xs font-normal text-muted-foreground">
-                  {admin?.email}
-                </span>
-              </div>
-            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>
+                <div className="flex flex-col">
+                  <span>
+                    {admin ? `${admin.firstName} ${admin.lastName}` : 'Admin'}
+                  </span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {admin?.email}
+                  </span>
+                </div>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => void handleLogout()}>
-              <LogOut className="size-4" />
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => void handleLogout()}>
+                <LogOut className="size-4" />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
