@@ -21,11 +21,22 @@ export type { PaginatedMeta, PaginatedList, PaginatedQuery } from '@/types/pagin
 
 export type { AdminMedia, MediaUploadResponse } from '@/types/media-type';
 
-export type { Category } from '@/types/category-type';
+export type {
+  Category,
+  GetCategoriesQuery,
+  CreateCategoryPayload,
+  UpdateCategoryPayload,
+} from '@/types/category-type';
 
 export type { Brand } from '@/types/brand-type';
 
-export type { Tax } from '@/types/tax-type';
+export type {
+  Tax,
+  TaxType,
+  GetTaxesQuery,
+  CreateTaxPayload,
+  UpdateTaxPayload,
+} from '@/types/tax-type';
 
 export type {
   ProductAttributeOption,
