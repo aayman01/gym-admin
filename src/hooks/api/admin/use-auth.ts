@@ -23,6 +23,10 @@ export async function logoutAdmin() {
   return api.post<null>(`${BASE_URL}/logout`);
 }
 
+export async function refreshAdminSession() {
+  return api.post<AdminUser>(`${BASE_URL}/refresh`);
+}
+
 // ─── Queries ─────────────────────────────────────────────────────────────────
 
 export function useGetAdminMe(options?: { enabled?: boolean }) {
