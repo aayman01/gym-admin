@@ -15,6 +15,9 @@ import { EditTaxPage } from '@/pages/edit-tax-page';
 import { BrandsPage } from '@/pages/brands-page';
 import { AddBrandPage } from '@/pages/add-brand-page';
 import { EditBrandPage } from '@/pages/edit-brand-page';
+import { ShippingPage } from '@/pages/shipping-page';
+import { AddShippingPage } from '@/pages/add-shipping-page';
+import { EditShippingPage } from '@/pages/edit-shipping-page';
 
 export function AppRouter() {
   return (
@@ -39,6 +42,12 @@ export function AppRouter() {
           <Route path="brands" element={<BrandsPage />} />
           <Route path="brands/new" element={<AddBrandPage />} />
           <Route path="brands/:brandId/edit" element={<EditBrandPage />} />
+          <Route path="shipping" element={<ShippingPage />} />
+          <Route path="shipping/new" element={<AddShippingPage />} />
+          <Route
+            path="shipping/:shippingMethodId/edit"
+            element={<EditShippingPage />}
+          />
         </Route>
       </Route>
 

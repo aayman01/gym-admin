@@ -44,6 +44,13 @@ export type {
 } from '@/types/tax-type';
 
 export type {
+  ShippingMethod,
+  GetShippingMethodsQuery,
+  CreateShippingMethodPayload,
+  UpdateShippingMethodPayload,
+} from '@/types/shipping-method-type';
+
+export type {
   ProductAttributeOption,
   ProductAttributeListItem,
   ProductAttributeDetail,
