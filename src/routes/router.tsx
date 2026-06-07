@@ -5,6 +5,7 @@ import { LoginPage } from '@/pages/login-page';
 import { DashboardPage } from '@/pages/dashboard-page';
 import { ProductsPage } from '@/pages/products-page';
 import { AddProductPage } from '@/pages/add-product-page';
+import { EditProductPage } from '@/pages/edit-product-page';
 
 export function AppRouter() {
   return (
@@ -16,6 +17,7 @@ export function AppRouter() {
           <Route index element={<DashboardPage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="products/new" element={<AddProductPage />} />
+          <Route path="products/:productId/edit" element={<EditProductPage />} />
         </Route>
       </Route>
 

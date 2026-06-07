@@ -5,6 +5,7 @@ import type {
   CreateProductPayload,
   GetProductsQuery,
   Product,
+  UpdateProductPayload,
 } from '@/types/product-type';
 
 const BASE_URL = '/admin/products';
@@ -22,8 +23,19 @@ export async function getProducts(query: GetProductsQuery = {}) {
   return api.get<PaginatedList<Product>>(BASE_URL, { params: query });
 }
 
+export async function getProduct(productId: string) {
+  return api.get<Product>(`${BASE_URL}/${productId}`);
+}
+
 export async function createProduct(payload: CreateProductPayload) {
   return api.post<Product>(BASE_URL, payload);
+}
+
+export async function updateProduct(
+  productId: string,
+  payload: UpdateProductPayload,
+) {
+  return api.patch<Product>(`${BASE_URL}/${productId}`, payload);
 }
 
 export function useGetProducts(
@@ -37,6 +49,17 @@ export function useGetProducts(
   });
 }
 
+export function useGetProduct(
+  productId: string,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: PRODUCT_QUERY_KEYS.detail(productId),
+    queryFn: () => getProduct(productId),
+    enabled: options?.enabled ?? Boolean(productId),
+  });
+}
+
 export function useCreateProduct() {
   const queryClient = useQueryClient();
 
@@ -44,6 +67,26 @@ export function useCreateProduct() {
     mutationFn: createProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: PRODUCT_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useUpdateProduct() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      productId,
+      payload,
+    }: {
+      productId: string;
+      payload: UpdateProductPayload;
+    }) => updateProduct(productId, payload),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: PRODUCT_QUERY_KEYS.detail(variables.productId),
+      });
     },
   });
 }

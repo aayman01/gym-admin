@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,34 +12,35 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { PickedImageChips } from '@/components/products/picked-image-chips';
+import { productCompactInputClassName } from '@/components/products/product-form.constants';
+import { useAutoVariants } from '@/hooks/use-auto-variants';
 import { useGetProductAttributesByIds } from '@/hooks/api/admin/use-product-attributes';
 import {
-  buildVariantOptionCombos,
   getVariantKey,
   hasVariableProduct,
-  mergeVariantsFromCombos,
   type GalleryPickTarget,
 } from '@/lib/product-variant-utils';
 import type { CreateProductFormValues } from '@/lib/validators/create-product.schema';
 
-const inputClassName =
-  'h-8 rounded-sm border-0 bg-primary/5 focus-visible:ring-primary/50';
-
 type ProductVariantTableProps = {
-  form: UseFormReturn<CreateProductFormValues>;
   activePickTarget: GalleryPickTarget | null;
   onSetPickTarget: (target: GalleryPickTarget) => void;
 };
 
 export function ProductVariantTable({
-  form,
   activePickTarget,
   onSetPickTarget,
 }: ProductVariantTableProps) {
-  const selectedAttributes = form.watch('selectedAttributes');
-  const variants = form.watch('variants');
-  const slug = form.watch('slug');
-  const basePrice = form.watch('basePrice');
+  const { setValue, getValues, formState } =
+    useFormContext<CreateProductFormValues>();
+  const selectedAttributes =
+    useWatch<CreateProductFormValues, 'selectedAttributes'>({
+      name: 'selectedAttributes',
+    }) ?? [];
+  const variants =
+    useWatch<CreateProductFormValues, 'variants'>({ name: 'variants' }) ?? [];
+
+  useAutoVariants();
 
   const attributeIds = useMemo(
     () => selectedAttributes.map((a) => a.attributeId),
@@ -58,37 +59,22 @@ export function ProductVariantTable({
     return map;
   }, [attributeQueries]);
 
-  useEffect(() => {
-    if (!hasVariableProduct(selectedAttributes)) {
-      form.setValue('variants', [], { shouldValidate: true });
-      return;
-    }
-
-    const combos = buildVariantOptionCombos(selectedAttributes);
-    const previous = form.getValues('variants');
-    const merged = mergeVariantsFromCombos(combos, previous, {
-      price: basePrice || 0,
-      slug: slug || 'product',
-    });
-    form.setValue('variants', merged, { shouldValidate: true });
-  }, [selectedAttributes, slug, basePrice, form]);
-
   const updateVariant = (
     index: number,
     field: 'sku' | 'price' | 'quantity',
     value: string,
   ) => {
-    const current = [...form.getValues('variants')];
+    const current = [...getValues('variants')];
     const variant = { ...current[index] };
     if (field === 'sku') variant.sku = value;
     if (field === 'price') variant.price = Number(value) || 0;
     if (field === 'quantity') variant.quantity = Number(value) || 0;
     current[index] = variant;
-    form.setValue('variants', current, { shouldValidate: true });
+    setValue('variants', current, { shouldValidate: true });
   };
 
   const removeVariantImage = (variantIndex: number, imageId: string) => {
-    const current = [...form.getValues('variants')];
+    const current = [...getValues('variants')];
     const variant = { ...current[variantIndex] };
     const galleryIds = (variant.galleryImageIds ?? []).filter(
       (id) => id !== imageId,
@@ -104,7 +90,7 @@ export function ProductVariantTable({
         : '';
     }
     current[variantIndex] = variant;
-    form.setValue('variants', current, { shouldValidate: true });
+    setValue('variants', current, { shouldValidate: true });
   };
 
   if (!hasVariableProduct(selectedAttributes)) {
@@ -170,7 +156,7 @@ export function ProductVariantTable({
                         onChange={(e) =>
                           updateVariant(index, 'sku', e.target.value)
                         }
-                        className={inputClassName}
+                        className={productCompactInputClassName}
                       />
                     </TableCell>
                     <TableCell>
@@ -182,7 +168,7 @@ export function ProductVariantTable({
                         onChange={(e) =>
                           updateVariant(index, 'price', e.target.value)
                         }
-                        className={`w-24 ${inputClassName}`}
+                        className={`w-24 ${productCompactInputClassName}`}
                       />
                     </TableCell>
                     <TableCell>
@@ -193,7 +179,7 @@ export function ProductVariantTable({
                         onChange={(e) =>
                           updateVariant(index, 'quantity', e.target.value)
                         }
-                        className={`w-20 ${inputClassName}`}
+                        className={`w-20 ${productCompactInputClassName}`}
                       />
                     </TableCell>
                     <TableCell>
@@ -224,9 +210,9 @@ export function ProductVariantTable({
         </div>
       )}
 
-      {form.formState.errors.variants && (
+      {formState.errors.variants && (
         <p className="text-xs text-destructive">
-          {form.formState.errors.variants.message}
+          {formState.errors.variants.message}
         </p>
       )}
     </div>
@@ -234,16 +220,21 @@ export function ProductVariantTable({
 }
 
 export function BaseVariantFields({
-  form,
   activePickTarget,
   onSetPickTarget,
 }: {
-  form: UseFormReturn<CreateProductFormValues>;
   activePickTarget: GalleryPickTarget | null;
   onSetPickTarget: (target: GalleryPickTarget) => void;
 }) {
-  const selectedAttributes = form.watch('selectedAttributes');
-  const baseVariant = form.watch('baseVariant');
+  const { register, setValue, getValues, formState } =
+    useFormContext<CreateProductFormValues>();
+  const selectedAttributes =
+    useWatch<CreateProductFormValues, 'selectedAttributes'>({
+      name: 'selectedAttributes',
+    }) ?? [];
+  const baseVariant = useWatch<CreateProductFormValues, 'baseVariant'>({
+    name: 'baseVariant',
+  });
 
   if (hasVariableProduct(selectedAttributes)) {
     return null;
@@ -258,12 +249,12 @@ export function BaseVariantFields({
   }));
 
   const removeBaseImage = (imageId: string) => {
-    const bv = form.getValues('baseVariant');
+    const bv = getValues('baseVariant');
     if (!bv) return;
     const galleryIds = (bv.galleryImageIds ?? []).filter((id) => id !== imageId);
     const previewUrls = { ...(bv.galleryPreviewUrls ?? {}) };
     delete previewUrls[imageId];
-    form.setValue(
+    setValue(
       'baseVariant',
       {
         ...bv,
@@ -288,12 +279,12 @@ export function BaseVariantFields({
           <Label htmlFor="baseSku">SKU</Label>
           <Input
             id="baseSku"
-            className={inputClassName}
-            {...form.register('baseVariant.sku')}
+            className={productCompactInputClassName}
+            {...register('baseVariant.sku')}
           />
-          {form.formState.errors.baseVariant?.sku && (
+          {formState.errors.baseVariant?.sku && (
             <p className="text-xs text-destructive">
-              {form.formState.errors.baseVariant.sku.message}
+              {formState.errors.baseVariant.sku.message}
             </p>
           )}
         </div>
@@ -304,8 +295,8 @@ export function BaseVariantFields({
             type="number"
             min={0}
             step="0.01"
-            className={inputClassName}
-            {...form.register('baseVariant.price', { valueAsNumber: true })}
+            className={productCompactInputClassName}
+            {...register('baseVariant.price', { valueAsNumber: true })}
           />
         </div>
         <div className="space-y-2">
@@ -314,8 +305,8 @@ export function BaseVariantFields({
             id="baseVariantQty"
             type="number"
             min={0}
-            className={inputClassName}
-            {...form.register('baseVariant.quantity', { valueAsNumber: true })}
+            className={productCompactInputClassName}
+            {...register('baseVariant.quantity', { valueAsNumber: true })}
           />
         </div>
       </div>

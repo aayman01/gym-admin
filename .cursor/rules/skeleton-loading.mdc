@@ -1,0 +1,59 @@
+---
+description: Use Skeleton loading for smooth, layout-stable async UI in gym-admin
+globs: src/pages/**,src/components/**
+alwaysApply: false
+---
+
+# Skeleton loading
+
+## When to use skeletons
+
+- Any page or section that fetches data (`useQuery`, `useGet*`) should show a skeleton while `isLoading` — never an empty layout or full-page spinner unless the action is a button submit.
+- Skeleton shape must **match the loaded layout** (same columns, card count, sidebar width) to avoid layout shift.
+
+## Shared components
+
+Import from `@/components/skeletons`:
+
+| UI pattern | Component |
+|------------|-----------|
+| Page title + subtitle (+ action) | `PageHeaderSkeleton` |
+| Create/edit form page | `FormPageSkeleton` (`layout: 'two-column' \| 'single'`, `sections`) |
+| Stat / metric cards | `SummaryCardSkeleton` or `SummaryCardsSkeleton` |
+| Full list page (no DataTable yet) | `TableListSkeleton` |
+| Paginated table inside DataTable | pass `isLoading` to `DataTable` (built-in row skeletons) |
+
+## Styling
+
+- Base primitive: `Skeleton` from `@/components/ui/skeleton`
+- Use Crimson Forge tokens: `rounded-sm`, `ring-1 ring-primary/10`, `bg-card` on card-shaped placeholders
+- For small inline panels (gallery grid, attribute list), local skeleton grids are OK — reuse `rounded-sm` sizing from existing patterns in `product-media-sidebar.tsx`
+
+## Patterns
+
+```tsx
+// Page-level fetch
+if (isLoading) return <FormPageSkeleton layout="two-column" sections={5} />;
+
+// Dashboard / stats
+if (isLoading) return (
+  <div className="space-y-6">
+    <PageHeaderSkeleton showAction />
+    <SummaryCardsSkeleton count={4} columns={4} />
+  </div>
+);
+
+// Table via DataTable — prefer isLoading prop, not a separate page skeleton
+<DataTable isLoading={isLoading} ... />
+```
+
+## Do not
+
+- Add one-off page skeletons with raw `<Skeleton className="h-96" />` blocks when a shared component fits
+- Show "Loading..." text alone without a skeleton placeholder for layout-heavy views
+- Block entire app with spinners when a section-level skeleton suffices
+
+## Domain-specific composites
+
+- Dashboard: keep `DashboardSkeleton` composed from shared skeletons + chart placeholders
+- New domains (orders, customers): compose from `PageHeaderSkeleton` + `TableListSkeleton` or `SummaryCardsSkeleton` before creating domain-only skeleton files

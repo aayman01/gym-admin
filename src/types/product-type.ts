@@ -148,4 +148,6 @@ export type CreateProductPayload = {
   baseVariant?: CreateProductBaseVariantInput;
 };
 
+export type UpdateProductPayload = CreateProductPayload;
+
 export type ProductMode = 'simple' | 'variable';

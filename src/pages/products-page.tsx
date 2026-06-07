@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type ColumnDef } from '@tanstack/react-table';
-import { Plus, RefreshCw } from 'lucide-react';
+import { Plus, Pencil, RefreshCw } from 'lucide-react';
 import { DataTable, DataTableColumnHeader } from '@/components/data-table';
 import type { DataTableFilterConfig } from '@/components/data-table/data-table.types';
 import { Badge } from '@/components/ui/badge';
@@ -113,10 +113,14 @@ export function ProductsPage() {
           <DataTableColumnHeader column={column} title="Title" />
         ),
         cell: ({ row }) => (
-          <div>
+          <button
+            type="button"
+            onClick={() => navigate(`/products/${row.original.id}/edit`)}
+            className="text-left hover:text-primary"
+          >
             <p className="font-medium">{row.original.title}</p>
             <p className="text-xs text-muted-foreground">{row.original.slug}</p>
-          </div>
+          </button>
         ),
       },
       {
@@ -166,8 +170,23 @@ export function ProductsPage() {
         ),
         cell: ({ row }) => formatDate(row.original.updatedAt),
       },
+      {
+        id: 'actions',
+        header: '',
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(`/products/${row.original.id}/edit`)}
+          >
+            <Pencil className="size-4" />
+            Edit
+          </Button>
+        ),
+        enableSorting: false,
+      },
     ],
-    [],
+    [navigate],
   );
 
   const handleFilterChange = (key: string, value: string) => {

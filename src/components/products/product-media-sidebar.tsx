@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { ChevronLeft, ChevronRight, Loader2, Search, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PickedImageChips } from '@/components/products/picked-image-chips';
 import { useAddToGallery, useGetGallery } from '@/hooks/api/admin/use-gallery';
 import { useUploadMedia, validateImageFile } from '@/hooks/api/admin/use-media';
+import { useVariantOptionLabels } from '@/hooks/use-variant-option-labels';
 import { ApiError } from '@/lib/api-client';
 import {
   GALLERY_PICK_BASE,
@@ -23,42 +24,41 @@ import {
 import type { CreateProductFormValues } from '@/lib/validators/create-product.schema';
 
 type ProductMediaSidebarProps = {
-  form: UseFormReturn<CreateProductFormValues>;
   pickTarget: GalleryPickTarget;
   onPickTargetChange: (target: GalleryPickTarget) => void;
-  variantLabels?: Record<string, string>;
 };
 
 export function assignGalleryImageToTarget(
-  form: UseFormReturn<CreateProductFormValues>,
+  getValues: ReturnType<typeof useFormContext<CreateProductFormValues>>['getValues'],
+  setValue: ReturnType<typeof useFormContext<CreateProductFormValues>>['setValue'],
   target: GalleryPickTarget,
   image: { id: string; url: string },
 ) {
   if (target === GALLERY_PICK_THUMBNAIL) {
-    form.setValue('thumbnailId', image.id, { shouldValidate: true });
-    form.setValue('thumbnailUrl', image.url);
+    setValue('thumbnailId', image.id, { shouldValidate: true });
+    setValue('thumbnailUrl', image.url);
     return;
   }
 
   if (target === GALLERY_PICK_SHARED) {
-    const ids = form.getValues('productGalleryImageIds');
+    const ids = getValues('productGalleryImageIds');
     if (ids.includes(image.id)) return;
-    form.setValue('productGalleryImageIds', [...ids, image.id], {
+    setValue('productGalleryImageIds', [...ids, image.id], {
       shouldValidate: true,
     });
-    form.setValue('productGalleryPreviewUrls', {
-      ...form.getValues('productGalleryPreviewUrls'),
+    setValue('productGalleryPreviewUrls', {
+      ...getValues('productGalleryPreviewUrls'),
       [image.id]: image.url,
     });
     return;
   }
 
   if (target === GALLERY_PICK_BASE) {
-    const bv = form.getValues('baseVariant');
+    const bv = getValues('baseVariant');
     if (!bv) return;
     const galleryIds = bv.galleryImageIds ?? [];
     if (galleryIds.includes(image.id)) return;
-    form.setValue(
+    setValue(
       'baseVariant',
       {
         ...bv,
@@ -75,7 +75,7 @@ export function assignGalleryImageToTarget(
     return;
   }
 
-  const variants = form.getValues('variants');
+  const variants = getValues('variants');
   const index = variants.findIndex(
     (v) => getVariantKey(v.optionIds) === target,
   );
@@ -96,15 +96,15 @@ export function assignGalleryImageToTarget(
     displayImageId: variant.displayImageId ?? image.id,
     displayImageUrl: variant.displayImageUrl || image.url,
   };
-  form.setValue('variants', next, { shouldValidate: true });
+  setValue('variants', next, { shouldValidate: true });
 }
 
 export function ProductMediaSidebar({
-  form,
   pickTarget,
   onPickTargetChange,
-  variantLabels,
 }: ProductMediaSidebarProps) {
+  const { getValues, setValue } = useFormContext<CreateProductFormValues>();
+  const variantLabels = useVariantOptionLabels();
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -114,6 +114,21 @@ export function ProductMediaSidebar({
 
   const { mutateAsync: upload } = useUploadMedia();
   const { mutateAsync: addToGallery } = useAddToGallery();
+
+  const thumbnailId = useWatch<CreateProductFormValues, 'thumbnailId'>({
+    name: 'thumbnailId',
+  });
+  const thumbnailUrl = useWatch<CreateProductFormValues, 'thumbnailUrl'>({
+    name: 'thumbnailUrl',
+  });
+  const sharedIds =
+    useWatch<CreateProductFormValues, 'productGalleryImageIds'>({
+      name: 'productGalleryImageIds',
+    }) ?? [];
+  const sharedUrls =
+    useWatch<CreateProductFormValues, 'productGalleryPreviewUrls'>({
+      name: 'productGalleryPreviewUrls',
+    }) ?? {};
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -138,16 +153,11 @@ export function ProductMediaSidebar({
     [data?.data],
   );
 
-  const thumbnailId = form.watch('thumbnailId');
-  const thumbnailUrl = form.watch('thumbnailUrl');
-  const sharedIds = form.watch('productGalleryImageIds');
-  const sharedUrls = form.watch('productGalleryPreviewUrls');
-
   const handlePick = useCallback(
     (item: { id: string; url: string }) => {
-      assignGalleryImageToTarget(form, pickTarget, item);
+      assignGalleryImageToTarget(getValues, setValue, pickTarget, item);
     },
-    [form, pickTarget],
+    [getValues, pickTarget, setValue],
   );
 
   const handleUpload = async (file: File) => {
@@ -171,7 +181,7 @@ export function ProductMediaSidebar({
           toast.error(message);
         }
       }
-      assignGalleryImageToTarget(form, pickTarget, {
+      assignGalleryImageToTarget(getValues, setValue, pickTarget, {
         id: media.id,
         url: media.url,
       });
@@ -248,14 +258,14 @@ export function ProductMediaSidebar({
           }))}
           size="sm"
           onRemove={(id) => {
-            form.setValue(
+            setValue(
               'productGalleryImageIds',
-              form.getValues('productGalleryImageIds').filter((i) => i !== id),
+              getValues('productGalleryImageIds').filter((i) => i !== id),
               { shouldValidate: true },
             );
-            const urls = { ...form.getValues('productGalleryPreviewUrls') };
+            const urls = { ...getValues('productGalleryPreviewUrls') };
             delete urls[id];
-            form.setValue('productGalleryPreviewUrls', urls);
+            setValue('productGalleryPreviewUrls', urls);
           }}
         />
       </div>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -16,16 +16,13 @@ import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 8;
 
-type ProductAttributePickerProps = {
-  form: UseFormReturn<CreateProductFormValues>;
-};
-
 function syncSelectedAttributes(
-  form: UseFormReturn<CreateProductFormValues>,
+  getValues: ReturnType<typeof useFormContext<CreateProductFormValues>>['getValues'],
+  setValue: ReturnType<typeof useFormContext<CreateProductFormValues>>['setValue'],
   attributeId: string,
   optionIds: string[],
 ) {
-  const current = form.getValues('selectedAttributes');
+  const current = getValues('selectedAttributes');
   const without = current.filter((a) => a.attributeId !== attributeId);
   const next: SelectedAttribute[] =
     optionIds.length > 0
@@ -33,16 +30,20 @@ function syncSelectedAttributes(
           a.attributeId.localeCompare(b.attributeId),
         )
       : without;
-  form.setValue('selectedAttributes', next, { shouldValidate: true });
+  setValue('selectedAttributes', next, { shouldValidate: true });
 }
 
-export function ProductAttributePicker({ form }: ProductAttributePickerProps) {
+export function ProductAttributePicker() {
+  const { getValues, setValue } = useFormContext<CreateProductFormValues>();
   const [page, setPage] = useState(1);
   const { data, isLoading } = useGetProductAttributes({
     page,
     limit: PAGE_SIZE,
   });
-  const selectedAttributes = form.watch('selectedAttributes');
+  const selectedAttributes =
+    useWatch<CreateProductFormValues, 'selectedAttributes'>({
+      name: 'selectedAttributes',
+    }) ?? [];
 
   const pageAttributeIds = useMemo(
     () => (data?.data ?? []).map((a) => a.id),
@@ -77,14 +78,14 @@ export function ProductAttributePicker({ form }: ProductAttributePickerProps) {
     const next = checked
       ? [...current, optionId]
       : current.filter((id) => id !== optionId);
-    syncSelectedAttributes(form, attributeId, next);
+    syncSelectedAttributes(getValues, setValue, attributeId, next);
   };
 
   const toggleSelectAll = (attributeId: string, checked: boolean) => {
     const detail = detailsById.get(attributeId);
     if (!detail) return;
     const next = checked ? detail.options.map((o) => o.id) : [];
-    syncSelectedAttributes(form, attributeId, next);
+    syncSelectedAttributes(getValues, setValue, attributeId, next);
   };
 
   const totalPages = data?.meta.totalPages ?? 1;
@@ -127,7 +128,7 @@ export function ProductAttributePicker({ form }: ProductAttributePickerProps) {
                   {options.length > 0 && (
                     <label className="flex items-center gap-2 text-xs text-muted-foreground">
                       <Checkbox
-                        checked={allSelected ? true : false}
+                        checked={allSelected}
                         onCheckedChange={(checked) =>
                           toggleSelectAll(attribute.id, checked === true)
                         }

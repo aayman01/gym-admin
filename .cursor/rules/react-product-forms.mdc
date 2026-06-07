@@ -1,0 +1,31 @@
+---
+description: React Hook Form patterns for gym-admin product pages
+globs: src/components/products/**,src/hooks/use-product*.ts,src/hooks/use-auto-variants.ts,src/hooks/use-variant-option-labels.ts
+alwaysApply: false
+---
+
+# Product form patterns
+
+## Re-renders
+
+- Use `FormProvider` + `useFormContext` in child sections; avoid passing `form` props everywhere.
+- Prefer scoped `useWatch({ name: 'field' })` or `Controller` in the component that renders the field.
+- Do not call `form.watch()` at the page shell for many fields — that re-renders the entire form on every keystroke.
+- Never put the whole `form` object in `useEffect` dependencies; destructure `setValue`, `getValues`, `reset`, `watch`.
+
+## Effects that write form state
+
+- Before `setValue` inside an effect, compare with current values (e.g. `variantsEqual`) to avoid loops.
+- Variant matrix sync must depend on a stable combo key, not raw array references or slug/basePrice typing.
+
+## Component size
+
+- Extract a **hook** before extracting UI. Keep components under ~200 lines.
+- Do not create one component per form field (`ProductTitleField`, etc.).
+- Reuse `ProductFormSection` for bordered blocks; shared class names live in `product-form.constants.ts`.
+
+## File layout
+
+- Shell: `product-form.tsx` (layout + FormProvider only)
+- Sections: `product-form-sidebar.tsx`, `product-form-main-fields.tsx`
+- Logic: `use-product-form.ts`, `use-auto-variants.ts`, `product-variant-sync.ts`
