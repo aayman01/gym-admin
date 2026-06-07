@@ -28,7 +28,12 @@ export type {
   UpdateCategoryPayload,
 } from '@/types/category-type';
 
-export type { Brand } from '@/types/brand-type';
+export type {
+  Brand,
+  GetBrandsQuery,
+  CreateBrandPayload,
+  UpdateBrandPayload,
+} from '@/types/brand-type';
 
 export type {
   Tax,
