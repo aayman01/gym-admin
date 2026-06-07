@@ -17,3 +17,8 @@ export type GetGalleryQuery = {
   limit?: number;
   search?: string;
 };
+
+export type SwapGalleryOrderPayload = {
+  mediaId1: string;
+  mediaId2: string;
+};

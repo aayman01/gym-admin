@@ -20,6 +20,7 @@ import { AddShippingPage } from '@/pages/add-shipping-page';
 import { EditShippingPage } from '@/pages/edit-shipping-page';
 import { OrdersPage } from '@/pages/orders-page';
 import { OrderDetailPage } from '@/pages/order-detail-page';
+import { GalleryPage } from '@/pages/gallery-page';
 
 export function AppRouter() {
   return (
@@ -52,6 +53,7 @@ export function AppRouter() {
           />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="orders/:orderId" element={<OrderDetailPage />} />
+          <Route path="gallery" element={<GalleryPage />} />
         </Route>
       </Route>
 

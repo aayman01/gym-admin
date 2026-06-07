@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { GalleryItem, GetGalleryQuery } from '@/types/gallery-type';
+import type {
+  GalleryItem,
+  GetGalleryQuery,
+  SwapGalleryOrderPayload,
+} from '@/types/gallery-type';
 import type { PaginatedList } from '@/types/pagination-type';
 
 const BASE_URL = '/admin/gallery';
@@ -22,6 +26,16 @@ export async function addToGallery(mediaId: string) {
   return api.post<GalleryItem>(BASE_URL, { mediaId });
 }
 
+export async function removeFromGallery(mediaId: string) {
+  return api.delete<{ removed: boolean; mediaId: string }>(
+    `${BASE_URL}/${mediaId}`,
+  );
+}
+
+export async function swapGalleryOrder(payload: SwapGalleryOrderPayload) {
+  return api.patch<null>(`${BASE_URL}/swap-order`, payload);
+}
+
 export function useGetGallery(
   query: GetGalleryQuery = {},
   options?: { enabled?: boolean },
@@ -38,6 +52,28 @@ export function useAddToGallery() {
 
   return useMutation({
     mutationFn: addToGallery,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: GALLERY_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useRemoveFromGallery() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: removeFromGallery,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: GALLERY_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useSwapGalleryOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: swapGalleryOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: GALLERY_QUERY_KEYS.lists() });
     },
