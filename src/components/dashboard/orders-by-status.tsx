@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import type { OrderStatusCount } from '@/types/dashboard.types';
+import type { OrderStatusCount } from '@/types/dashboard-type';
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-amber-500/20 text-amber-400',

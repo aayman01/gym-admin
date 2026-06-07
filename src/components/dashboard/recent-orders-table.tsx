@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import type { RecentOrder } from '@/types/dashboard.types';
+import type { RecentOrder } from '@/types/dashboard-type';
 
 const STATUS_VARIANT: Record<string, string> = {
   PENDING: 'bg-amber-500/20 text-amber-400',

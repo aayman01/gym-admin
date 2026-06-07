@@ -1,5 +1,5 @@
 import { AlertTriangle } from 'lucide-react';
-import type { LowStockAlert } from '@/types/dashboard.types';
+import type { LowStockAlert } from '@/types/dashboard-type';
 
 interface LowStockListProps {
   items: LowStockAlert[];

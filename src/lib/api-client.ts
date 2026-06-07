@@ -1,4 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { config } from '@/config';
 import type { ApiResponse } from '@/types/api.types';
 
 const MUTATING_METHODS = new Set(['post', 'put', 'patch', 'delete']);
@@ -19,7 +20,7 @@ export class ApiError extends Error {
 }
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1',
+  baseURL: config.api.baseUrl,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

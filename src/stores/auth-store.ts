@@ -1,6 +1,10 @@
 import { create } from 'zustand';
-import type { AdminUser } from '@/types/api.types';
-import * as authApi from '@/lib/auth-api';
+import type { AdminUser } from '@/types/auth-type';
+import {
+  getAdminMe,
+  loginAdmin,
+  logoutAdmin,
+} from '@/hooks/api/admin/use-auth';
 import { ApiError } from '@/lib/api-client';
 
 type AuthState = {
@@ -21,7 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email, password) => {
     set({ isLoading: true });
     try {
-      const admin = await authApi.login(email, password);
+      const admin = await loginAdmin({ email, password });
       set({ admin, isLoading: false, isInitialized: true });
     } catch (error) {
       set({ isLoading: false });
@@ -32,7 +36,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     set({ isLoading: true });
     try {
-      await authApi.logout();
+      await logoutAdmin();
     } finally {
       set({ admin: null, isLoading: false, isInitialized: true });
     }
@@ -41,7 +45,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkSession: async () => {
     set({ isLoading: true });
     try {
-      const admin = await authApi.getMe();
+      const admin = await getAdminMe();
       set({ admin, isLoading: false, isInitialized: true });
       return true;
     } catch (error) {

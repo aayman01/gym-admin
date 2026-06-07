@@ -21,8 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useDashboard } from '@/hooks/use-dashboard';
-import type { DashboardPeriod } from '@/types/dashboard.types';
+import { useGetDashboard } from '@/hooks/api/admin/use-dashboard';
+import type { DashboardPeriod } from '@/types/dashboard-type';
 
 const PERIOD_OPTIONS: { value: DashboardPeriod; label: string }[] = [
   { value: '7d', label: 'Last 7 days' },
@@ -44,7 +44,7 @@ function formatCount(value: number) {
 export function DashboardPage() {
   const [period, setPeriod] = useState<DashboardPeriod>('30d');
   const { data, isLoading, isError, refetch, isFetching } =
-    useDashboard(period);
+    useGetDashboard(period);
 
   if (isLoading) {
     return <DashboardSkeleton />;

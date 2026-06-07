@@ -16,9 +16,5 @@ export type ApiErrorResponse = {
 
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
-export type AdminUser = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-};
+/** Alias matching ezybuzz-front envelope naming. */
+export type SingleApiResponse<T> = ApiSuccessResponse<T>;

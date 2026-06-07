@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { RevenueChartPoint } from '@/types/dashboard.types';
+import type { RevenueChartPoint } from '@/types/dashboard-type';
 
 interface RevenueChartProps {
   data: RevenueChartPoint[];
