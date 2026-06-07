@@ -3,6 +3,8 @@ import { ProtectedRoute } from '@/components/auth/protected-route';
 import { AdminLayout } from '@/components/layout/admin-layout';
 import { LoginPage } from '@/pages/login-page';
 import { DashboardPage } from '@/pages/dashboard-page';
+import { ProductsPage } from '@/pages/products-page';
+import { AddProductPage } from '@/pages/add-product-page';
 
 export function AppRouter() {
   return (
@@ -12,6 +14,8 @@ export function AppRouter() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="products/new" element={<AddProductPage />} />
         </Route>
       </Route>
 
