@@ -18,6 +18,8 @@ import { EditBrandPage } from '@/pages/edit-brand-page';
 import { ShippingPage } from '@/pages/shipping-page';
 import { AddShippingPage } from '@/pages/add-shipping-page';
 import { EditShippingPage } from '@/pages/edit-shipping-page';
+import { OrdersPage } from '@/pages/orders-page';
+import { OrderDetailPage } from '@/pages/order-detail-page';
 
 export function AppRouter() {
   return (
@@ -48,6 +50,8 @@ export function AppRouter() {
             path="shipping/:shippingMethodId/edit"
             element={<EditShippingPage />}
           />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders/:orderId" element={<OrderDetailPage />} />
         </Route>
       </Route>
 

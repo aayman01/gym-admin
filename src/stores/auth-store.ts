@@ -17,6 +17,9 @@ type AuthState = {
   clearSession: () => void;
 };
 
+/** Dedupes concurrent session checks (e.g. React StrictMode double-mount in dev). */
+let sessionCheckInFlight: Promise<boolean> | null = null;
+
 export const useAuthStore = create<AuthState>((set) => ({
   admin: null,
   isLoading: false,
@@ -43,19 +46,29 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   checkSession: async () => {
-    set({ isLoading: true });
-    try {
-      const admin = await getAdminMe();
-      set({ admin, isLoading: false, isInitialized: true });
-      return true;
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
+    if (sessionCheckInFlight) {
+      return sessionCheckInFlight;
+    }
+
+    sessionCheckInFlight = (async () => {
+      set({ isLoading: true });
+      try {
+        const admin = await getAdminMe();
+        set({ admin, isLoading: false, isInitialized: true });
+        return true;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          set({ admin: null, isLoading: false, isInitialized: true });
+          return false;
+        }
         set({ admin: null, isLoading: false, isInitialized: true });
         return false;
+      } finally {
+        sessionCheckInFlight = null;
       }
-      set({ admin: null, isLoading: false, isInitialized: true });
-      return false;
-    }
+    })();
+
+    return sessionCheckInFlight;
   },
 
   clearSession: () => {

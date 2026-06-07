@@ -71,3 +71,15 @@ export type {
 } from '@/types/product-type';
 
 export type { GalleryItem, GalleryMedia, GetGalleryQuery } from '@/types/gallery-type';
+
+export type {
+  Order,
+  OrderStatus,
+  PaymentStatus,
+  OrderReturnStatus,
+  OrderEvent,
+  OrderEventType,
+  OrderEventActionBy,
+  GetOrdersQuery,
+  UpdateOrderStatusPayload,
+} from '@/types/order-type';
