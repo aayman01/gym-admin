@@ -8,6 +8,7 @@ import {
   Percent,
   Truck,
   Images,
+  Settings,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -32,6 +33,7 @@ const navItems = [
   { title: 'Taxes', url: '/taxes', icon: Percent },
   { title: 'Shipping', url: '/shipping', icon: Truck },
   { title: 'Gallery', url: '/gallery', icon: Images },
+  { title: 'Settings', url: '/settings', icon: Settings },
 ];
 
 export function AppSidebar() {
