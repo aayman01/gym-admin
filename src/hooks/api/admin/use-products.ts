@@ -38,6 +38,14 @@ export async function updateProduct(
   return api.patch<Product>(`${BASE_URL}/${productId}`, payload);
 }
 
+export async function archiveProduct(productId: string) {
+  return api.delete<{ deleted: boolean }>(`${BASE_URL}/${productId}`);
+}
+
+export async function restoreProduct(productId: string) {
+  return api.patch<{ restored: boolean }>(`${BASE_URL}/${productId}/restore`, {});
+}
+
 export function useGetProducts(
   query: GetProductsQuery = {},
   options?: { enabled?: boolean },
@@ -87,6 +95,26 @@ export function useUpdateProduct() {
       queryClient.invalidateQueries({
         queryKey: PRODUCT_QUERY_KEYS.detail(variables.productId),
       });
+    },
+  });
+}
+
+export function useArchiveProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: archiveProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useRestoreProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: restoreProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_QUERY_KEYS.lists() });
     },
   });
 }

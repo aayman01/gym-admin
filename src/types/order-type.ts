@@ -105,6 +105,7 @@ export type OrderEventMetadata = {
   previousStatus?: string;
   newStatus?: string;
   notes?: string;
+  note?: string;
   [key: string]: unknown;
 };
 
@@ -144,6 +145,11 @@ export type GetOrdersQuery = PaginatedQuery & {
 
 export type UpdateOrderStatusPayload = {
   status: OrderStatus;
+  note?: string | null;
+};
+
+export type AddOrderNotePayload = {
+  note: string;
 };
 
 export const ORDER_STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [

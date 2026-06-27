@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { PaginatedList, PaginatedQuery } from '@/types/pagination-type';
 import type {
@@ -26,6 +26,22 @@ export async function getProductAttributes(query: PaginatedQuery = {}) {
 
 export async function getProductAttribute(attributeId: string) {
   return api.get<ProductAttributeDetail>(`${BASE_URL}/${attributeId}`);
+}
+
+export async function createProductAttribute(payload: { name: string; options?: { value: string }[] }) {
+  return api.post<{ id: string; name: string }>(BASE_URL, payload);
+}
+
+export async function updateProductAttribute(attributeId: string, payload: { name?: string; options?: { value: string }[] }) {
+  return api.patch<{ id: string }>(`${BASE_URL}/${attributeId}`, payload);
+}
+
+export async function deleteProductAttribute(attributeId: string) {
+  return api.delete<{ id: string }>(`${BASE_URL}/${attributeId}`);
+}
+
+export async function deleteProductAttributeOption(attributeId: string, optionId: string) {
+  return api.delete<{ id: string }>(`${BASE_URL}/${attributeId}/options/${optionId}`);
 }
 
 export function useGetProductAttributes(
@@ -57,5 +73,48 @@ export function useGetProductAttributesByIds(attributeIds: string[]) {
       queryFn: () => getProductAttribute(id),
       enabled: Boolean(id),
     })),
+  });
+}
+
+export function useCreateProductAttribute() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createProductAttribute,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_ATTRIBUTE_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useUpdateProductAttribute() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ attributeId, payload }: { attributeId: string; payload: { name?: string; options?: { value: string }[] } }) =>
+      updateProductAttribute(attributeId, payload),
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_ATTRIBUTE_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({ queryKey: PRODUCT_ATTRIBUTE_QUERY_KEYS.detail(vars.attributeId) });
+    },
+  });
+}
+
+export function useDeleteProductAttribute() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteProductAttribute,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_ATTRIBUTE_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useDeleteProductAttributeOption() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ attributeId, optionId }: { attributeId: string; optionId: string }) =>
+      deleteProductAttributeOption(attributeId, optionId),
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: PRODUCT_ATTRIBUTE_QUERY_KEYS.detail(vars.attributeId) });
+    },
   });
 }

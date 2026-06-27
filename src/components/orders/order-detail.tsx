@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { MessageSquarePlus } from 'lucide-react';
 import { OrderTimeline } from '@/components/orders/order-timeline';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -25,7 +26,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useUpdateOrderStatus } from '@/hooks/api/admin/use-orders';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useAddOrderNote, useUpdateOrderStatus } from '@/hooks/api/admin/use-orders';
 import { ApiError } from '@/lib/api-client';
 import {
   defaultStatusBadgeClass,
@@ -95,7 +99,10 @@ type OrderDetailProps = {
 
 export function OrderDetail({ order }: OrderDetailProps) {
   const updateStatus = useUpdateOrderStatus();
+  const addNote = useAddOrderNote();
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(order.status);
+  const [statusNote, setStatusNote] = useState('');
+  const [noteText, setNoteText] = useState('');
 
   useEffect(() => {
     setSelectedStatus(order.status);
@@ -108,15 +115,30 @@ export function OrderDetail({ order }: OrderDetailProps) {
     try {
       await updateStatus.mutateAsync({
         orderId: order.id,
-        payload: { status },
+        payload: { status, note: statusNote.trim() || null },
       });
       toast.success('Order status updated');
+      setStatusNote('');
     } catch (error) {
       setSelectedStatus(order.status);
       const message =
         error instanceof ApiError
           ? error.message
           : 'Failed to update order status';
+      toast.error(message);
+    }
+  }
+
+  async function handleAddNote() {
+    const trimmed = noteText.trim();
+    if (!trimmed) return;
+    try {
+      await addNote.mutateAsync({ orderId: order.id, payload: { note: trimmed } });
+      toast.success('Note added');
+      setNoteText('');
+    } catch (error) {
+      const message =
+        error instanceof ApiError ? error.message : 'Failed to add note';
       toast.error(message);
     }
   }
@@ -230,7 +252,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
                 <CardTitle>Update status</CardTitle>
                 <CardDescription>Change the order fulfillment status</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-3">
                 <Select
                   value={selectedStatus}
                   onValueChange={(value) =>
@@ -249,6 +271,19 @@ export function OrderDetail({ order }: OrderDetailProps) {
                     ))}
                   </SelectContent>
                 </Select>
+                <div className="space-y-1">
+                  <Label htmlFor="status-note" className="text-xs text-muted-foreground">
+                    Note (optional)
+                  </Label>
+                  <Textarea
+                    id="status-note"
+                    placeholder="Reason for status change..."
+                    rows={2}
+                    value={statusNote}
+                    onChange={(e) => setStatusNote(e.target.value)}
+                    className="rounded-sm text-sm"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -350,6 +385,35 @@ export function OrderDetail({ order }: OrderDetailProps) {
             </CardHeader>
             <CardContent>
               <OrderTimeline events={order.events ?? []} />
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-sm ring-primary/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquarePlus className="size-4" />
+                Add internal note
+              </CardTitle>
+              <CardDescription>
+                Notes are only visible to admins.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea
+                placeholder="Write a note..."
+                rows={3}
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                className="rounded-sm text-sm"
+              />
+              <Button
+                size="sm"
+                className="rounded-sm"
+                disabled={!noteText.trim() || addNote.isPending}
+                onClick={() => void handleAddNote()}
+              >
+                {addNote.isPending ? 'Adding...' : 'Add note'}
+              </Button>
             </CardContent>
           </Card>
 

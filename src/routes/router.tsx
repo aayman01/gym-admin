@@ -22,6 +22,9 @@ import { OrdersPage } from '@/pages/orders-page';
 import { OrderDetailPage } from '@/pages/order-detail-page';
 import { GalleryPage } from '@/pages/gallery-page';
 import { SettingsPage } from '@/pages/settings-page';
+import { AttributesPage } from '@/pages/attributes-page';
+import { AddAttributePage, EditAttributePage } from '@/pages/attribute-pages';
+import { InventoryPage } from '@/pages/inventory-page';
 
 export function AppRouter() {
   return (
@@ -56,6 +59,10 @@ export function AppRouter() {
           <Route path="orders/:orderId" element={<OrderDetailPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="attributes" element={<AttributesPage />} />
+          <Route path="attributes/new" element={<AddAttributePage />} />
+          <Route path="attributes/:attributeId/edit" element={<EditAttributePage />} />
+          <Route path="inventory" element={<InventoryPage />} />
         </Route>
       </Route>
 

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { PaginatedList } from '@/types/pagination-type';
 import type {
+  AddOrderNotePayload,
   GetOrdersQuery,
   Order,
   UpdateOrderStatusPayload,
@@ -34,6 +35,10 @@ export async function updateOrderStatus(
   return api.patch<Order>(`${BASE_URL}/${orderId}/status`, payload);
 }
 
+export async function addOrderNote(orderId: string, payload: AddOrderNotePayload) {
+  return api.post<Order>(`${BASE_URL}/${orderId}/notes`, payload);
+}
+
 export function useGetOrders(
   query: GetOrdersQuery = {},
   options?: { enabled?: boolean },
@@ -64,6 +69,24 @@ export function useUpdateOrderStatus() {
       orderId: string;
       payload: UpdateOrderStatusPayload;
     }) => updateOrderStatus(orderId, payload),
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(ORDER_QUERY_KEYS.detail(variables.orderId), data);
+      queryClient.invalidateQueries({ queryKey: ORDER_QUERY_KEYS.lists() });
+    },
+  });
+}
+
+export function useAddOrderNote() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      orderId,
+      payload,
+    }: {
+      orderId: string;
+      payload: AddOrderNotePayload;
+    }) => addOrderNote(orderId, payload),
     onSuccess: (data, variables) => {
       queryClient.setQueryData(ORDER_QUERY_KEYS.detail(variables.orderId), data);
       queryClient.invalidateQueries({ queryKey: ORDER_QUERY_KEYS.lists() });

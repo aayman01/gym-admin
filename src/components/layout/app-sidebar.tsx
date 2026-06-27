@@ -9,6 +9,8 @@ import {
   Truck,
   Images,
   Settings,
+  Sliders,
+  Boxes,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -27,7 +29,9 @@ import {
 const navItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard, end: true },
   { title: 'Products', url: '/products', icon: Package },
+  { title: 'Inventory', url: '/inventory', icon: Boxes },
   { title: 'Categories', url: '/categories', icon: FolderTree },
+  { title: 'Attributes', url: '/attributes', icon: Sliders },
   { title: 'Orders', url: '/orders', icon: ShoppingCart },
   { title: 'Brands', url: '/brands', icon: Tag },
   { title: 'Taxes', url: '/taxes', icon: Percent },

@@ -40,9 +40,11 @@ function getEventLabel(event: OrderEvent): string {
     case 'REFUND_COMPLETED':
       return 'Refund completed';
     case 'NOTE_ADDED':
-      return event.metadata?.notes
-        ? `Note: ${String(event.metadata.notes)}`
-        : 'Note added';
+      return event.metadata?.note
+        ? `Note: ${String(event.metadata.note)}`
+        : event.metadata?.notes
+          ? `Note: ${String(event.metadata.notes)}`
+          : 'Note added';
     default: {
       const eventType = event.eventType as string;
       return eventType.replace(/_/g, ' ');

@@ -58,6 +58,7 @@ export type Product = {
   rating: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
   thumbnail: ProductMediaRef | null;
   brand: ProductBrandRef | null;
   category: ProductCategoryRef;
@@ -95,6 +96,8 @@ export type GetProductsQuery = {
   status?: ItemStatus;
   type?: ProductType;
   sellingUnit?: SellingUnit;
+  archivedOnly?: boolean;
+  includeArchived?: boolean;
 };
 
 export type CreateProductVariantInput = {
